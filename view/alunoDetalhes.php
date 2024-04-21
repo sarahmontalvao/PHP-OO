@@ -25,5 +25,8 @@ $alunoId = $aluno->getAlunoId();
     <button name="novo-aluno">Enviar</button>
 </form>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="../js/script.js"></script>
+
 </body>
 </html>

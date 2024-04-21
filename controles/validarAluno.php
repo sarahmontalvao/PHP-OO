@@ -10,8 +10,14 @@ if(isset($_POST['novo-aluno'])){
 
     $aluno = new Aluno ($dadosAlunos['nome'], $dadosAlunos['curso']);
     $aluno->insert();
-   var_dump($aluno);
-}else{
-    echo 'nada';
+
+    if($aluno->insert()) {
+        // Se a inserção for bem-sucedida, exibe uma mensagem de sucesso
+        echo "<script>mostrarAlertaSucesso();</script>";
+    } else {
+        // Se a inserção falhar, exibe uma mensagem de falha
+        echo "<script>mostrarAlertaFalha();</script>";
+    }
+  
 }
 ?>

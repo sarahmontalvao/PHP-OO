@@ -20,10 +20,10 @@ class Aluno implements Model{
         $stmt->bindValue(":curso", $this->curso);
        
         if($stmt->execute()){
-            echo 'inserido <br>';
+           
             return true;
         }else{
-            echo 'falha';
+            return false;
         }
     }
 
