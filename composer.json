@@ -1,0 +1,11 @@
+{
+    "name": "sarah/objetos",
+    "autoload": {
+        "psr-4": {
+            "Sarah\\Objetos\\": "src/"
+        }
+    },
+    "require": {
+        "chillerlan/php-qrcode": "^5.0"
+    }
+}

@@ -14,6 +14,41 @@ $todosTreinamentos = $treinamento->getAllTreinamento();
 <html>
 <head>
     <title>Formulário de Treinamento</title>
+    <style>
+
+/* Definindo o fundo do canvas como transparente */
+
+
+            canvas:-moz-full-screen,
+        canvas:-webkit-full-screen,
+        canvas:-ms-fullscreen,
+        canvas:fullscreen {
+            width: 100%;
+            height: 100%;
+}
+canvas {
+        background-color: white;
+        color: black;
+        display: block;
+        border: 5px solid red;
+    }
+
+    #canvasContainer {
+        position: relative; /* Necessário para que os botões possam ser posicionados relativamente */
+        width: 400px; /* Largura do canvas */
+        height: 200px; /* Altura do canvas */
+    }
+
+    #limpar{
+        position: absolute;
+        top: 25px; /* Ajuste conforme necessário */
+        left: 10px; /* Ajuste conforme necessário */
+        z-index: 99992;
+        
+    }
+
+
+    </style>
 </head>
 <body>
 <?php
@@ -57,15 +92,17 @@ if (!isset($_GET['sucesso'])) {
         <input type="date" id="data" name="data" required><br><br>
 
         <label for="assinatura">Assinatura:</label><br>
-        <div id="mensagem"  style="color: red;"></div>
+    <div id="canvasContainer">
+        <div id="mensagem" style="color: red;"></div>
+        <button id="expandButton">Expandir</button>
+        <button id="exitButton">Sair</button>
         <canvas id="assinatura" width="400" height="200"></canvas><br><br>
-        <button type="button" onclick="limparAssinatura()">Limpar Assinatura</button><br><br>
-
-        <input type="hidden" id="assinatura_data" name="assinatura_data">
-
-        <input type="hidden" id="assinatura_feita" name="assinatura_feita">
-        
-        <input type="submit" value="Enviar">
+ 
+    <button id="limpar" type="button" onclick="limparAssinatura()">Limpar Assinatura</button><br><br>
+    </div>
+    <input type="hidden" id="assinatura_data" name="assinatura_data">
+    <input type="hidden" id="assinatura_feita" name="assinatura_feita">
+    <input type="submit" value="Enviar">
     </form>
 <?php
 } 
@@ -103,83 +140,124 @@ if (!isset($_GET['sucesso'])) {
 
 
 <script>
-    var canvas = document.getElementById("assinatura");
-    var ctx = canvas.getContext("2d");
-    var desenhando = false;
 
-    // Eventos de mouse para desktops
-    canvas.addEventListener("mousedown", function(e) {
-        desenhando = true;
-        ctx.beginPath();
-        var rect = canvas.getBoundingClientRect();
-        var x = e.clientX - rect.left;
-        var y = e.clientY - rect.top;
-        ctx.moveTo(x, y);
-    });
 
-    canvas.addEventListener("mousemove", function(e) {
-        if (desenhando) {
-            var rect = canvas.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            ctx.lineTo(x, y);
-            ctx.stroke();
-        }
-    });
+document.getElementById('expandButton').addEventListener('click', function() {
+            var canvas = document.getElementById('assinatura');
+            if (canvas.requestFullscreen) {
+                canvas.requestFullscreen();
+            } else if (canvas.mozRequestFullScreen) { /* Firefox */
+                canvas.mozRequestFullScreen();
+            } else if (canvas.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                canvas.webkitRequestFullscreen();
+            } else if (canvas.msRequestFullscreen) { /* IE/Edge */
+                canvas.msRequestFullscreen();
+            }
+            document.getElementById('limpar').style.display = 'inline';
+        
+        });
 
-    canvas.addEventListener("mouseup", function() {
-        desenhando = false;
-        capturarAssinatura();
-    });
+        document.getElementById('exitButton').addEventListener('click', function() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { /* Firefox */
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE/Edge */
+                document.msExitFullscreen();
+            }
+          
+        });
 
-    canvas.addEventListener("mouseleave", function() {
-        desenhando = false;
-    });
 
-    // Eventos de toque para dispositivos móveis
-    canvas.addEventListener("touchstart", function(e) {
-        desenhando = true;
+
+var canvas = document.getElementById("assinatura");
+var ctx = canvas.getContext("2d");
+var desenhando = false;
+
+function ajustarCoordenadasMouse(event) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    return {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY
+    };
+}
+
+// Eventos de mouse para desktops
+canvas.addEventListener("mousedown", function(e) {
+    desenhando = true;
+    var coords = ajustarCoordenadasMouse(e);
+    ctx.beginPath();
+    ctx.moveTo(coords.x, coords.y);
+});
+
+canvas.addEventListener("mousemove", function(e) {
+    if (desenhando) {
+        var coords = ajustarCoordenadasMouse(e);
+        ctx.lineTo(coords.x, coords.y);
+        ctx.stroke();
+    }
+});
+
+canvas.addEventListener("mouseup", function() {
+    desenhando = false;
+    capturarAssinatura();
+});
+
+canvas.addEventListener("mouseleave", function() {
+    desenhando = false;
+});
+
+// Eventos de toque para dispositivos móveis
+canvas.addEventListener("touchstart", function(e) {
+    desenhando = true;
+    var touch = e.touches[0];
+    var coords = ajustarCoordenadasMouse(touch);
+    ctx.beginPath();
+    ctx.moveTo(coords.x, coords.y);
+});
+
+canvas.addEventListener("touchmove", function(e) {
+    if (desenhando) {
         var touch = e.touches[0];
-        ctx.beginPath();
-        ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
-    });
-
-    canvas.addEventListener("touchmove", function(e) {
-        if (desenhando) {
-            var touch = e.touches[0];
-            ctx.lineTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
-            ctx.stroke();
-        }
-    });
-
-    canvas.addEventListener("touchend", function() {
-        desenhando = false;
-        capturarAssinatura();
-    });
-
-    canvas.addEventListener("touchcancel", function() {
-        desenhando = false;
-    });
-
-    function limparAssinatura() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        document.getElementById("assinatura_data").value = "";
-        document.getElementById("assinatura_feita").value = ""; // Limpar também o campo de verificação
-        document.getElementById("mensagem").innerHTML = "";
+        var coords = ajustarCoordenadasMouse(touch);
+        ctx.lineTo(coords.x, coords.y);
+        ctx.stroke();
     }
+});
 
-    function capturarAssinatura() {
-        var dataURL = canvas.toDataURL();
-        document.getElementById("assinatura_data").value = dataURL;
-        document.getElementById("assinatura_feita").value = "true";
+canvas.addEventListener("touchend", function() {
+    desenhando = false;
+    capturarAssinatura();
+});
+
+canvas.addEventListener("touchcancel", function() {
+    desenhando = false;
+});
+
+function limparAssinatura() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById("assinatura_data").value = "";
+    document.getElementById("assinatura_feita").value = ""; // Limpar também o campo de verificação
+    document.getElementById("mensagem").innerHTML = "";
+}
+
+function capturarAssinatura() {
+    var dataURL = canvas.toDataURL();
+    document.getElementById("assinatura_data").value = dataURL;
+    document.getElementById("assinatura_feita").value = "true";
+}
+
+document.querySelector("form").addEventListener("submit", function(event) {
+    if (document.getElementById("assinatura_feita").value !== "true") {
+        event.preventDefault(); // Impedir o envio do formulário se a assinatura não foi feita
+        document.getElementById("mensagem").innerHTML = "Por favor, faça a assinatura antes de enviar o formulário.";
     }
+});
 
-    document.querySelector("form").addEventListener("submit", function(event) {
-        if (document.getElementById("assinatura_feita").value !== "true") {
-            event.preventDefault(); // Impedir o envio do formulário se a assinatura não foi feita
-            document.getElementById("mensagem").innerHTML = "Por favor, faça a assinatura antes de enviar o formulário.";
-        }
-    });
 </script>
 
 </body>

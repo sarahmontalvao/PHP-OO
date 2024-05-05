@@ -25,6 +25,16 @@ $alunoId = $aluno->getAlunoId();
     <button name="novo-aluno">Enviar</button>
 </form>
 
+
+<h2>GERAR QR CODE</h2>
+
+<form action="../acessoExterno/controles/qrCode.php" method="POST">
+
+
+<input type="hidden" name="id" value="<?php echo $_GET['IdAluno'] ?>">
+<input type="submit" name="qrCode" value="Gerar QrCode">
+</form>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="../js/script.js"></script>
 
