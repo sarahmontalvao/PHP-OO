@@ -13,6 +13,8 @@ include_once('../classes/alunoClass.php');
 $aluno = new Aluno(null, null); 
 $alunos = $aluno->getAllalunos();
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +25,17 @@ $alunos = $aluno->getAllalunos();
     <title>Document</title>
 </head>
 <body>
+
+<div>
+    <form action="../controles/validarAluno.php" method="POST">
+        <select name="col" >
+            <option value="genero">genero</option>
+            <option value="titulo">titulo</option>
+        </select>
+        <input name="pesquisa"type="search" placeholder="Pesquise o nome do aluno">
+        <button>Pesquisar</button>
+    </form>
+</div>
 
 <?php foreach($alunos as $al) { ?>
     <a href="alunoDetalhes.php?IdAluno=<?php echo $al['id'] ?>"><?php echo $al['id'] ?></a>

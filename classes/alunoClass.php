@@ -42,6 +42,36 @@ class Aluno implements Model{
         }
     }
 
+   public function pesquisa($termo, $coluna) {
+    // Removendo espaços em branco e convertendo para minúsculas
+    $termo = trim(strtolower($termo));
+    
+    // Query SQL para pesquisar na coluna especificada (com termo e coluna também em minúsculas)
+    $sql = "SELECT * FROM filmes WHERE LOWER($coluna) LIKE :termo";
+    
+    // Preparando a consulta
+    $stmt = PdoConexao::getInstancia()->prepare($sql);
+    
+    // Substituindo o placeholder :termo pelo valor de pesquisa (com termo em minúsculas)
+    $termoPesquisa = "%$termo%";
+    $stmt->bindParam(':termo', $termoPesquisa, PDO::PARAM_STR);
+    
+    // Executando a consulta
+    $stmt->execute();
+    
+    // Recuperando os resultados
+    $filmes = $stmt->fetchAll();
+    
+    // Verificando se houve resultados
+    if($filmes){
+        return $filmes; // Retornando os resultados
+    } else {
+        return []; // Retornando um array vazio se não houver resultados
+    }
+}
+
+    
+
     public function read($id) {
         // Lógica para ler os dados de um aluno do banco de dados
     }
