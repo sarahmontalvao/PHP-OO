@@ -27,20 +27,36 @@ class Aluno implements Model{
         }
     }
 
-    public function getAllalunos() {
+    public function getAllAlunos() {
+        // Enviar resposta inicial
+       
+
+    // Enviar resposta inicial antes de fazer qualquer processamento
+    echo json_encode(['status' => 'processing']);
+     // Envia a saída imediatamente
+
+    // Aguarde um momento para simular um processamento em segundo plano
+    sleep(3);
+    
+        // Processamento em segundo plano
         $sql = "SELECT * FROM filmes";
         $stmt = PdoConexao::getInstancia()->prepare($sql);
         $stmt->execute();
         $alunos = $stmt->fetchAll();
+    
+        // Esperar por um tempo simulado (substitua pelo seu processamento real)
         
-       
-        if($alunos){
-          
+    
+        // Enviar resposta final
+        if ($alunos) {
+            
+            echo json_encode(['success' => true]);
             return $alunos;
-        }else{
-            echo 'falha';
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Falha ao obter os dados']);
         }
     }
+    
 
    public function pesquisa($termo, $coluna) {
     // Removendo espaços em branco e convertendo para minúsculas
@@ -130,3 +146,4 @@ class AlunoId extends Aluno {
 }
 
 ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

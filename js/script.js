@@ -33,3 +33,37 @@ function mostrarAlertaFalha() {
 }
 
 }
+$(document).ready(function(){
+    // Função para fazer a requisição AJAX
+    function getAllAlunos() {
+        console.log('Teste')
+        
+      
+        $.ajax({
+            type: 'GET',
+            url: '../classes/alunoClass.php',
+            beforeSend: function(){
+                $('#loading').show(); // Mostra o símbolo de carregamento antes de enviar a requisição
+            },
+            success: function(response){
+                // Verifica se a resposta inicial indica que o processamento está em andamento
+                if (response.status === 'processing') {
+                    $('#loading').show(); // Mostra o símbolo de carregamento
+                } else {
+                    $('#loading').hide(); // Esconde o símbolo de carregamento
+                    $('#alunos').html(response); // Atualiza a página com os dados recebidos do servidor
+                }
+            },
+            error: function(){
+                $('#loading').hide(); // Em caso de erro, certifique-se de ocultar o símbolo de carregamento
+                // Trate o erro conforme necessário
+            }
+        }).done(function(res){
+            console.log(res);
+        });
+    }
+
+    // Chama a função ao carregar a página
+    getAllAlunos();
+});
+

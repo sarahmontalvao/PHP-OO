@@ -34,7 +34,7 @@ $alunoId = $aluno->getAlunoId();
 <input type="hidden" name="id" value="<?php echo $_GET['IdAluno'] ?>">
 <input type="submit" name="qrCode" value="Gerar QrCode">
 </form>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="../js/script.js"></script>
 

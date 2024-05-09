@@ -33,6 +33,8 @@ $alunos = $aluno->getAllalunos();
             <option value="titulo">titulo</option>
         </select>
         <input name="pesquisa"type="search" placeholder="Pesquise o nome do aluno">
+
+  
         <button>Pesquisar</button>
     </form>
 </div>
@@ -40,11 +42,53 @@ $alunos = $aluno->getAllalunos();
 <?php foreach($alunos as $al) { ?>
     <a href="alunoDetalhes.php?IdAluno=<?php echo $al['id'] ?>"><?php echo $al['id'] ?></a>
     <a href="#" onclick="showConfirmation(<?php echo $al['id'] ?>)">Excluir</a>
+
+   
     
 <?php } ?>
 
+
+ <form action="">
+    <select id="select1">
+      <option value="opcao1">Opção 1</option>
+      <option value="opcao2">Opção 2</option>
+      <option value="opcao3">Opção 3</option>
+    </select>
     
+    <select id="select2">
+      <option value="opcao1">Opção 1</option>
+      <option value="opcao2">Opção 2</option>
+      <option value="opcao3">Opção 3</option>
+    </select>
+    </form>
+
+
+    <!-- Coloque isso em algum lugar do seu HTML -->
+<div id="loading" style="display:none;">
+    <img src="loading.gif" alt="Carregando...">
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="../js/script.js"></script>
+
+
+<script>
+  // Obtenha os elementos select
+  var select1 = document.getElementById('select1');
+  var select2 = document.getElementById('select2');
+
+  // Adicione um ouvinte de evento de mudança ao primeiro select
+  select1.addEventListener('change', function() {
+    // Atribua o valor do primeiro select ao segundo select
+    select2.value = select1.value;
+  });
+
+  select2.addEventListener('change', function() {
+    // Atribua o valor do segundo select ao primeiro select
+    select1.value = select2.value;
+  });
+</script>
 </body>
 </html>
