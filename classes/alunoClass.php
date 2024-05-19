@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once('interface.php');
 include_once('../db/conecta.php');
 
@@ -12,31 +13,43 @@ class Aluno implements Model{
         $this->curso = $curso;
     }
 
-
     public function insert() {
         $sql = "INSERT INTO filmes (titulo, genero) VALUES (:nome, :curso)";
         $stmt = PdoConexao::getInstancia()->prepare($sql);
         $stmt->bindValue(":nome", $this->nome);
         $stmt->bindValue(":curso", $this->curso);
        
-        if($stmt->execute()){
-           
-            return true;
-        }else{
+        if ($stmt->execute()) {
+            // Seleciona o filme recém inserido para obter os detalhes
+            $sql2 = "SELECT * FROM filmes WHERE titulo = :titulo AND genero = :genero";
+            $stmt2 = PdoConexao::getInstancia()->prepare($sql2);
+            $stmt2->bindValue(":titulo", $this->nome);
+            $stmt2->bindValue(":genero", $this->curso);
+            $stmt2->execute();
+    
+            $result = $stmt2->fetch(PDO::FETCH_ASSOC);
+    
+            if ($result) {
+                // Armazena informações na sessão
+                $_SESSION['user_id'] = $result['titulo'];
+                $_SESSION['email'] = $result['genero'];
+    
+                // Define um cookie persistente para lembrar do usuário
+                $cookie_value = base64_encode($result['titulo']);
+                setcookie('user_login', $cookie_value, time() + (86400 * 30), "/"); // Cookie válido por 30 dias
+                header("Location: ../view/alunos.php");
+                return true;
+            } else {
+                return false;
+            }
+        } else {
             return false;
         }
     }
+    
 
     public function getAllAlunos() {
-        // Enviar resposta inicial
-       
-
-    // Enviar resposta inicial antes de fazer qualquer processamento
-    echo json_encode(['status' => 'processing']);
-     // Envia a saída imediatamente
-
-    // Aguarde um momento para simular um processamento em segundo plano
-    sleep(3);
+      
     
         // Processamento em segundo plano
         $sql = "SELECT * FROM filmes";
@@ -50,10 +63,10 @@ class Aluno implements Model{
         // Enviar resposta final
         if ($alunos) {
             
-            echo json_encode(['success' => true]);
+           
             return $alunos;
         } else {
-            echo json_encode(['success' => false, 'message' => 'Falha ao obter os dados']);
+           
         }
     }
     

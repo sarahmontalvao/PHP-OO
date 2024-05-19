@@ -1,5 +1,23 @@
 <?php
+
+session_start();
+
+// Gera um ID de sessão, se não existir
+if (!isset($_SESSION['sessao_id']) || empty($_SESSION['sessao_id'])) {
+    $_SESSION['sessao_id'] = session_id();
+}
+
+// Obtém o ID da sessão
+//$sessao_id = $_SESSION['sessao_id'];
+
+// Exibe o conteúdo da sessão
+echo '<pre>';
+print_r($_SESSION);
+echo '</pre>';
+
 include_once('../classes/alunoClass.php');
+
+
 // alo fazer a pesquisa colocar todos no mesmo nome de variavel e chamar o metodo que  se o  name de input pesquisa for enviados, caso vazio chamar o que retorna tudo
 
 /* exemplo if (!empty($termoPesquisa)) {
@@ -40,8 +58,8 @@ $alunos = $aluno->getAllalunos();
 </div>
 
 <?php foreach($alunos as $al) { ?>
-    <a href="alunoDetalhes.php?IdAluno=<?php echo $al['id'] ?>"><?php echo $al['id'] ?></a>
-    <a href="#" onclick="showConfirmation(<?php echo $al['id'] ?>)">Excluir</a>
+    <a href="alunoDetalhes.php?IdAluno=<?php echo $al['id'] ?>"><?php echo $al['id'] ?></a><br>
+    <a href="#" onclick="showConfirmation(<?php echo $al['id'] ?>)">Excluir</a><br>
 
    
     
